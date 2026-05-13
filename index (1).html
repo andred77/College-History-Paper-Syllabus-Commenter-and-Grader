@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHPSCG - College History Paper Syllabus Commenter and Grader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:       #1a1208;
+      --parchment: #f5f0e8;
+      --cream:     #ede7d5;
+      --warm-mid:  #c8b89a;
+      --accent:    #8b2c0f;
+      --accent2:   #4a6741;
+      --gold:      #b8860b;
+      --border:    #c4b49a;
+      --shadow:    rgba(26,18,8,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background-color: var(--parchment);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.75;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+
+    /* ── HEADER ───────────────────────────────────── */
+    header {
+      background-color: var(--ink);
+      color: var(--parchment);
+      padding: 3.5rem 2rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid var(--gold);
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 38px,
+        rgba(200,184,154,0.07) 38px,
+        rgba(200,184,154,0.07) 39px
+      );
+      pointer-events: none;
+    }
+    header .kicker {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--warm-mid);
+      margin-bottom: 0.75rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: var(--parchment);
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    header h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .header-meta {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .header-meta span {
+      font-size: 0.88rem;
+      color: var(--warm-mid);
+      letter-spacing: 0.05em;
+    }
+    .header-meta span strong {
+      color: var(--parchment);
+      font-weight: 600;
+    }
+    .ornament {
+      display: block;
+      text-align: center;
+      color: var(--gold);
+      font-size: 1.4rem;
+      margin: 1.5rem auto 0;
+      letter-spacing: 0.5em;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    /* ── NAV ──────────────────────────────────────── */
+    nav {
+      background-color: var(--cream);
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    nav ul li a {
+      display: block;
+      padding: 0.85rem 1.4rem;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+      transition: color 0.2s, background 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+    nav ul li a:hover {
+      color: var(--accent);
+      background-color: rgba(139,44,15,0.06);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── LAYOUT ───────────────────────────────────── */
+    main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+    section { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
+    section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      line-height: 1.25;
+    }
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 1.75rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; color: #2e2416; }
+
+    /* ── CALLOUT BOXES ────────────────────────────── */
+    .callout {
+      background: var(--cream);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout.green { border-left-color: var(--accent2); }
+    .callout.gold  { border-left-color: var(--gold); }
+
+    /* ── AI FACTORY GRID ──────────────────────────── */
+    .factory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .factory-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .factory-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+    }
+    .factory-card .card-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .factory-card p { font-size: 0.88rem; margin: 0; color: #3a2e1e; }
+
+    /* ── SAMPLE ESSAYS ────────────────────────────── */
+    .essay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .essay-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .essay-card:hover { box-shadow: 0 6px 20px var(--shadow); transform: translateY(-2px); }
+    .essay-card .grade-badge {
+      position: absolute;
+      top: 0.9rem; right: 0.9rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .grade-A { color: var(--accent2); }
+    .grade-B { color: #3a7abf; }
+    .grade-C { color: var(--gold); }
+    .grade-D { color: #c05c00; }
+    .grade-F { color: var(--accent); }
+    .essay-card .essay-course {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm-mid);
+      margin-bottom: 0.3rem;
+    }
+    .essay-card .essay-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-right: 2rem;
+      color: var(--ink);
+    }
+    .essay-card .essay-score {
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+      color: #5a4a32;
+    }
+
+    /* ── MODAL ────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(26,18,8,0.7);
+      z-index: 1000;
+      padding: 1.5rem;
+      overflow-y: auto;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+    .modal {
+      background: var(--parchment);
+      border-radius: 10px;
+      max-width: 780px;
+      width: 100%;
+      padding: 2.5rem;
+      position: relative;
+      margin: auto;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: none; border: none;
+      font-size: 1.5rem; cursor: pointer;
+      color: var(--warm-mid);
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: var(--cream); color: var(--accent); }
+    .modal h3 { color: var(--accent); margin-top: 0; }
+    .modal .meta-row {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: #5a4a32;
+    }
+    .modal .meta-row span strong { color: var(--ink); }
+    .score-bars { margin: 1rem 0; }
+    .score-bar-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 40px;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.84rem;
+    }
+    .score-bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent2), var(--gold));
+      transition: width 0.6s ease;
+    }
+    .essay-body {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      max-height: 280px;
+      overflow-y: auto;
+      margin: 1rem 0;
+      white-space: pre-wrap;
+    }
+    .professor-comment {
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      font-style: italic;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── GRADER TOOL ──────────────────────────────── */
+    #grader-section {
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 2rem 2.5rem;
+      margin-top: 2rem;
+    }
+    .api-key-row {
+      display: flex; gap: 0.75rem; align-items: center;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .api-key-row label {
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    input[type="text"], input[type="password"], select, textarea {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.92rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.85rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    input[type="text"]:focus, input[type="password"]:focus,
+    select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(139,44,15,0.12);
+    }
+    .api-key-row input { flex: 1; min-width: 260px; }
+
+    .form-row { margin-bottom: 1.25rem; }
+    .form-row label {
+      display: block;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--ink);
+    }
+    textarea { resize: vertical; line-height: 1.65; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+    .btn {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--parchment);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #a33510;
+      box-shadow: 0 4px 14px rgba(139,44,15,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-secondary {
+      background: var(--cream);
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* ── RESULTS ──────────────────────────────────── */
+    #results-area { margin-top: 2rem; display: none; }
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .big-grade {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .result-header .score-info h3 { margin-top: 0; font-size: 1.3rem; }
+    .result-header .score-info p { margin: 0; color: #5a4a32; font-size: 0.9rem; }
+    .improvements-list {
+      list-style: none;
+      margin: 0.75rem 0;
+    }
+    .improvements-list li {
+      padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+      margin-bottom: 0.4rem;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      position: relative;
+    }
+    .improvements-list li::before {
+      content: counter(item);
+      counter-increment: item;
+      position: absolute;
+      left: 0.6rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+    .improvements-list { counter-reset: item; }
+    .cat-feedback { margin-top: 1.5rem; }
+    .cat-feedback-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 0.6rem;
+    }
+    .cat-feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      background: var(--cream);
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .cat-feedback-header .cat-score { color: var(--accent); font-family: 'Playfair Display', serif; font-weight: 700; }
+    .cat-feedback-body {
+      padding: 0 1rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s;
+      font-size: 0.88rem;
+      color: #3a2e1e;
+    }
+    .cat-feedback-body.open { max-height: 300px; padding: 0.75rem 1rem; }
+
+    /* ── SPINNER ──────────────────────────────────── */
+    .spinner-wrap {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      justify-content: center;
+    }
+    .spinner-wrap.show { display: flex; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SYLLABUS DISPLAY ─────────────────────────── */
+    .syllabus-display {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    .syllabus-display.visible { display: block; }
+    .syllabus-cat {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed var(--border);
+    }
+    .syllabus-cat:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .syllabus-cat-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: var(--accent2);
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+    .syllabus-grades { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.4rem; margin-top: 0.5rem; }
+    .syllabus-grade {
+      background: var(--cream);
+      border-radius: 4px;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.72rem;
+    }
+    .syllabus-grade strong { display: block; font-family: 'Playfair Display', serif; }
+    @media (max-width: 600px) { .syllabus-grades { grid-template-columns: 1fr 1fr; } }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: var(--warm-mid);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+    footer strong { color: var(--parchment); }
+
+    /* ── ANIMATIONS ───────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+
+    /* ── UTIL ─────────────────────────────────────── */
+    .divider {
+      text-align: center;
+      color: var(--warm-mid);
+      font-size: 1rem;
+      letter-spacing: 0.6em;
+      margin: 0.75rem 0;
+    }
+    .tag {
+      display: inline-block;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: #5a4a32;
+    }
+    .error-msg {
+      background: #fdf0ee;
+      border: 1px solid #e8b4aa;
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ HEADER -->
+<header>
+  <p class="kicker">MIS 432 &mdash; Prototype Project</p>
+  <h1>College History Paper<br><em>Syllabus Commenter and Grader</em></h1>
+  <p class="kicker" style="margin-top:0.4rem;font-size:0.9rem;color:#c8b89a;">CHPSCG</p>
+  <div class="header-meta">
+    <span><strong>Andrew Redmon</strong></span>
+    <span>&bull;</span>
+    <span>Date: <strong>5/12/2026</strong></span>
+    <span>&bull;</span>
+    <span>Course: <strong>MIS 432</strong></span>
+  </div>
+  <span class="ornament">&#10022; &#10022; &#10022;</span>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ NAV -->
+<nav>
+  <ul>
+    <li><a href="#business-case">Business Case</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#sample-essays">Sample Essays</a></li>
+    <li><a href="#syllabi">Syllabi</a></li>
+    <li><a href="#grader">Grade an Essay</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ═══════════════════════ BUSINESS CASE -->
+  <section id="business-case">
+    <p class="section-label">Business Case</p>
+    <h2>The Problem This Prototype Solves</h2>
+
+    <h3>The Problem</h3>
+    <p>The problem that my prototype solves is for students to improve their essays based off of the syllabus and increase their grade. Students have this problem because the syllabus can be vague or hard to interpret when writing an essay. This affects teachers too as they can get overwhelmed helping out many students. How this is dealt with today is by students either turning in what they think is similar, going to a writing center, or going to the teacher for help. This is not enough as the student is reliant on the schedule and how helpful the teacher and tutoring center are, plus the tutoring center has a higher chance of interpreting the syllabus differently from how the teacher intended.</p>
+
+    <h3>The User</h3>
+    <p>My target user is second year history majors who are taking multiple history classes and have multiple writing assignments each week. What their experience was before is going back and forth between different syllabi while writing their essay and either checking in with a certain teacher or tutor if their availabilities lined up. Their experience will be improved and time will be saved. They can run their draft through the prototype and it will give a score based off the syllabus and give suggestions on how to improve the essay.</p>
+
+    <h3>Why Should This Prototype Exist</h3>
+    <p>AI is the right fit for this problem because it can give a score and specific feedback to improve the essay. This requires looking over the syllabus on what is required and running through the essay and grading and commenting on it. A student does not know where their essay will fall grade wise and what they need to do to improve it, and my prototype is the solution.</p>
+
+    <div class="divider">&#10022; &#10022; &#10022;</div>
+
+    <h3>The Biggest Risk</h3>
+    <div class="callout">
+      <p>One way my prototype could fail is if a science student uses it to help with their research paper. Since my model is specifically intended for history majors with multiple papers, the model is trained on those papers and the format of a research paper is different, and this could lead to a lower grade or comments that tell the user to use more outside sources.</p>
+    </div>
+
+    <h3>Course Concepts</h3>
+    <div class="callout green">
+      <p><strong>Data Dependency:</strong> How data-dependency shows up in my prototype is that the model is dependent on graded and commented college history papers. Without the comments on the papers the model will not know how to accurately give a score or know what to comment.</p>
+    </div>
+    <div class="callout gold">
+      <p><strong>Long Tail Failure:</strong> How the long tail failure shows up in my model is that the model will need a lot of graded and commented essays and the syllabus. This can be hard to come by as those three are protected by the school's privacy policy.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ HOW IT WORKS -->
+  <section id="how-it-works">
+    <p class="section-label">AI Factory</p>
+    <h2>How It Works</h2>
+    <p>The system follows a structured AI pipeline that takes in the syllabus and a student's draft essay, compares it against example graded papers, and produces a grade with specific feedback.</p>
+
+    <div class="factory-grid">
+      <div class="factory-card">
+        <p class="card-title">Data</p>
+        <p>The syllabus for the class, the drafted essay, and previous essays from different students that are already graded and commented on, so the model can learn how to grade and give suggestions.</p>
+      </div>
+      <div class="factory-card">
+        <p class="card-title">Model</p>
+        <p>Machine learning analyzes the essay and produces a score. Generative AI runs through the essay and comments on what should change based on the syllabus criteria.</p>
+      </div>
+      <div class="factory-card">
+        <p class="card-title">Prediction</p>
+        <p>The system predicts a grade and generates suggestions based off of the syllabus and previously graded assignments used as calibration examples.</p>
+      </div>
+      <div class="factory-card">
+        <p class="card-title">Decision</p>
+        <p>The model delivers a letter grade, a score out of 100, category-level scores, per-category feedback, and a ranked list of the top improvements to make.</p>
+      </div>
+      <div class="factory-card">
+        <p class="card-title">Value</p>
+        <p>Saved time, better grades, less stress, ability to focus more on bigger assignments, and a clear path to improving writing skills by understanding exactly what a professor expects.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ SAMPLE ESSAYS -->
+  <section id="sample-essays">
+    <p class="section-label">Training Data</p>
+    <h2>Sample Graded Essays</h2>
+    <p>The following ten essays span five history courses and range from A to F grades. They serve as the calibration examples the AI uses when grading a new essay. Click any card to read the full text and professor comments.</p>
+    <div class="essay-grid" id="essay-grid"></div>
+  </section>
+
+  <!-- ═══════════════════════ SYLLABI -->
+  <section id="syllabi">
+    <p class="section-label">Grading Rubrics</p>
+    <h2>Course Syllabi</h2>
+    <p>Each course has its own rubric defining what an A, B, C, D, and F look like across six graded categories totaling 100 points. Select a course to view its full rubric.</p>
+
+    <div class="form-row" style="max-width:420px;">
+      <label for="syllabus-select">Select a Course</label>
+      <select id="syllabus-select">
+        <option value="">-- Choose a course --</option>
+        <option value="HIST 112">HIST 112 - History of Ancient Rome</option>
+        <option value="HIST 125">HIST 125 - Intro to History of India</option>
+        <option value="HIST 190">HIST 190 - Imperial America</option>
+        <option value="HIST 220">HIST 220 - England in the 1800s</option>
+        <option value="HIST 395">HIST 395 - History of Modern England</option>
+        <option value="HIST 410">HIST 410 - History of Native Americans in Canada</option>
+        <option value="HIST 340">HIST 340 - History in Post WW2 America</option>
+      </select>
+    </div>
+    <div class="syllabus-display" id="syllabus-display"></div>
+  </section>
+
+  <!-- ═══════════════════════ GRADER -->
+  <section id="grader">
+    <p class="section-label">Live Tool</p>
+    <h2>Grade an Essay</h2>
+    <p>Paste your essay below along with the course syllabus requirements, enter your Anthropic API key, and the system will grade it against the rubric and provide actionable feedback.</p>
+
+    <div id="grader-section">
+      <div class="api-key-row">
+        <label for="api-key">Anthropic API Key</label>
+        <input type="password" id="api-key" placeholder="sk-ant-..." autocomplete="off" />
+      </div>
+
+      <div class="two-col">
+        <div class="form-row">
+          <label for="course-select">Course</label>
+          <select id="course-select">
+            <option value="HIST 112">HIST 112 - History of Ancient Rome</option>
+            <option value="HIST 125">HIST 125 - Intro to History of India</option>
+            <option value="HIST 190">HIST 190 - Imperial America</option>
+            <option value="HIST 220">HIST 220 - England in the 1800s</option>
+            <option value="HIST 395">HIST 395 - History of Modern England</option>
+            <option value="HIST 410">HIST 410 - History of Native Americans in Canada</option>
+            <option value="HIST 340" selected>HIST 340 - History in Post WW2 America</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="essay-title-input">Essay Title</label>
+          <input type="text" id="essay-title-input" placeholder="Enter your essay title..." />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="essay-input">Essay Text</label>
+        <textarea id="essay-input" rows="14" placeholder="Paste your full essay draft here..."></textarea>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="grade-btn" onclick="gradeEssay()">Grade This Essay</button>
+        <button class="btn btn-secondary" onclick="loadUngraded()">Load Sample Essay (HIST 340)</button>
+      </div>
+      <div class="error-msg" id="error-msg"></div>
+
+      <div class="spinner-wrap" id="spinner">
+        <div class="spinner"></div>
+        <span style="font-style:italic;color:#5a4a32;">Sending to AI grader, please wait...</span>
+      </div>
+
+      <div id="results-area">
+        <div class="divider" style="margin:1.5rem 0;">&#10022; &#10022; &#10022;</div>
+        <h3 style="color:var(--ink);font-size:1.4rem;margin-bottom:1rem;">Grade Report</h3>
+
+        <div class="result-header">
+          <div class="big-grade" id="big-grade"></div>
+          <div class="score-info">
+            <h3 id="result-title"></h3>
+            <p id="result-score"></p>
+          </div>
+        </div>
+
+        <div class="score-bars" id="score-bars"></div>
+
+        <h3 style="margin-top:1.5rem;">Overall Comment</h3>
+        <div class="professor-comment" id="overall-comment"></div>
+
+        <h3 style="margin-top:1.5rem;">Top 3 Improvements</h3>
+        <ul class="improvements-list" id="improvements-list"></ul>
+
+        <h3 style="margin-top:1.5rem;">Category Feedback</h3>
+        <p style="font-size:0.85rem;color:#5a4a32;margin-bottom:0.75rem;">Click each category to expand feedback.</p>
+        <div class="cat-feedback" id="cat-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>CHPSCG</strong> &mdash; College History Paper Syllabus Commenter and Grader &nbsp;&bull;&nbsp;
+  Andrew Redmon &nbsp;&bull;&nbsp; MIS 432 &nbsp;&bull;&nbsp; 5/12/2026
+</footer>
+
+<!-- ═══════════════════════ ESSAY MODAL -->
+<div class="modal-overlay" id="essay-modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn()">&times;</button>
+    <p class="essay-course" id="modal-course" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--warm-mid);margin-bottom:0.25rem;"></p>
+    <h3 id="modal-title"></h3>
+    <div class="meta-row" id="modal-meta"></div>
+    <div class="score-bars" id="modal-score-bars"></div>
+    <h3 style="font-size:1rem;margin-top:1.25rem;">Essay Text</h3>
+    <div class="essay-body" id="modal-essay-body"></div>
+    <h3 style="font-size:1rem;margin-top:1rem;">Professor Comments</h3>
+    <div class="professor-comment" id="modal-comments"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DATA: SYLLABI
+// ═══════════════════════════════════════════════════════════════════
+const SYLLABI = {
+  "HIST 112": {
+    course_name: "History of Ancient Rome",
+    essay_requirements: "Essays must be 4-6 pages. Students must argue a clear thesis about Roman history and support it with at least four primary or secondary sources. Chicago citation style is required.",
+    categories: {
+      structure:               { weight: 20, description: "Introduction with thesis, organized body paragraphs, conclusion.", grades: { A: "Clear intro with a debatable thesis. Each body paragraph has a topic sentence tied to the thesis. Conclusion synthesizes the argument.", B: "Thesis present but slightly broad. Body paragraphs mostly focused. Conclusion mostly restates thesis.", C: "Thesis is vague or descriptive, not argumentative. Some paragraphs drift off topic. Conclusion is thin.", D: "No clear thesis. Paragraphs are disorganized. Conclusion is missing or repeats the introduction.", F: "No discernible structure. Ideas are listed without organization." } },
+      clarity:                 { weight: 15, description: "Writing is clear and easy to follow.", grades: { A: "Sentences are concise and precise. Academic vocabulary used correctly. No confusion about what the student means.", B: "Mostly clear. A few awkward sentences but the argument is followable.", C: "Frequent unclear sentences. Reader must guess at meaning in places.", D: "Clarity problems throughout. Hard to follow the argument.", F: "Writing is incomprehensible in large sections." } },
+      formatting:              { weight: 10, description: "Chicago citation style, 12pt Times New Roman, 1-inch margins.", grades: { A: "Chicago citations correct. Font and margins follow instructions. No formatting errors.", B: "One or two minor citation errors. Formatting mostly correct.", C: "Several citation errors. May use wrong citation style.", D: "Citations largely missing or wrong. Formatting ignored in places.", F: "No citations. Formatting requirements ignored." } },
+      understanding_of_material: { weight: 20, description: "Demonstrates knowledge of Roman history.", grades: { A: "Accurate, detailed knowledge of Roman political, social, or military history. Uses specific dates, names, and events correctly.", B: "Mostly accurate. Minor factual errors that do not hurt the argument.", C: "Some factual errors. Shows surface-level understanding.", D: "Several significant factual errors. Understanding of material is shallow.", F: "Pervasive factual errors. Little to no understanding demonstrated." } },
+      strength_of_argument:    { weight: 20, description: "The thesis makes a clear, original, and debatable claim.", grades: { A: "Thesis is specific and arguable. The essay takes a position that could reasonably be disputed.", B: "Argument is present but somewhat predictable or not fully developed.", C: "Argument is mostly descriptive. Thesis could not be seriously debated.", D: "No real argument. Essay summarizes events.", F: "No argument attempted." } },
+      support_of_argument:     { weight: 15, description: "Evidence from sources is used to back up the argument.", grades: { A: "At least four sources cited. Evidence is directly tied to each claim. Quotes are analyzed, not just dropped in.", B: "Three or four sources. Evidence mostly tied to claims. Some quotes not fully analyzed.", C: "Two or three sources. Evidence is present but loosely connected to the argument.", D: "One or two sources. Evidence rarely connected to claims.", F: "No sources or evidence used." } }
+    }
+  },
+  "HIST 125": {
+    course_name: "Intro to History of India",
+    essay_requirements: "Essays must be 4-6 pages. Students must examine a specific period or event in Indian history and argue an interpretive claim. At least three sources required. MLA citation style.",
+    categories: {
+      structure:               { weight: 20, description: "Introduction, body, conclusion with logical flow.", grades: { A: "Intro contextualizes the topic and ends with a clear thesis. Body paragraphs build logically. Conclusion broadens the significance of the argument.", B: "Structure is mostly solid. Transitions between paragraphs are present but not always smooth.", C: "Structure is recognizable but some sections feel out of order or disconnected.", D: "Structure is hard to follow. Paragraphs do not connect to one another.", F: "No essay structure present." } },
+      clarity:                 { weight: 15, description: "Sentences and ideas are expressed clearly.", grades: { A: "Writing is fluid and precise. Technical terms defined when introduced. No ambiguity.", B: "Mostly clear. Occasional awkward phrasing.", C: "Clarity issues in multiple paragraphs. Some sentences require re-reading.", D: "Hard to follow through most of the essay.", F: "Writing obscures meaning throughout." } },
+      formatting:              { weight: 10, description: "MLA format with Works Cited page.", grades: { A: "Perfect MLA in-text citations and Works Cited. Formatting requirements met.", B: "Minor MLA errors. Formatting mostly correct.", C: "Several MLA errors or missing some Works Cited entries.", D: "Works Cited mostly missing. Little attempt at MLA.", F: "No citations or Works Cited page." } },
+      understanding_of_material: { weight: 20, description: "Shows understanding of Indian historical context.", grades: { A: "Demonstrates accurate knowledge of the Mughal Empire, colonial period, independence movement, or other relevant topic. Specific details used.", B: "Good understanding with minor inaccuracies.", C: "General understanding but lacks specifics. Some factual errors.", D: "Weak understanding. Multiple factual errors.", F: "Demonstrates no understanding of Indian history." } },
+      strength_of_argument:    { weight: 20, description: "Thesis makes an interpretive historical claim.", grades: { A: "Thesis is interpretive and debatable. The student takes a clear stance on why something happened or what its significance was.", B: "Argument is present but could be sharper or more specific.", C: "Thesis is more descriptive than argumentative.", D: "No real claim made. Essay is a summary.", F: "No argument present." } },
+      support_of_argument:     { weight: 15, description: "Evidence from at least three sources supports claims.", grades: { A: "Three or more sources directly tied to each main claim. Evidence is explained and analyzed.", B: "Sources used but analysis of evidence is uneven.", C: "Sources present but loosely tied to the argument.", D: "Minimal sourcing. Evidence not tied to argument.", F: "No sources or evidence." } }
+    }
+  },
+  "HIST 190": {
+    course_name: "Imperial America",
+    essay_requirements: "Essays must be 5-7 pages. Students must argue a claim about American imperial expansion and its consequences. At least five sources required. Chicago citation style.",
+    categories: {
+      structure:               { weight: 20, description: "Organized argument with introduction, body, and conclusion.", grades: { A: "Intro establishes context and presents a focused thesis. Each paragraph advances the argument. Conclusion reflects on broader implications.", B: "Solid structure with minor organizational issues.", C: "Structure present but some sections weaken the argument.", D: "Disorganized. Hard to follow the line of reasoning.", F: "No organized structure." } },
+      clarity:                 { weight: 15, description: "Writing is clear, direct, and appropriately academic.", grades: { A: "Writing is sharp and direct. No vague language. Argument is easy to follow.", B: "Mostly clear. Some unnecessary complexity or vagueness.", C: "Several passages are unclear. Meaning must be inferred.", D: "Frequent clarity problems impede understanding.", F: "Essay is largely unreadable." } },
+      formatting:              { weight: 10, description: "Chicago style footnotes or endnotes, proper page formatting.", grades: { A: "Chicago footnotes correct and complete. All formatting instructions followed.", B: "Minor citation or formatting errors.", C: "Several citation errors. Some formatting requirements missed.", D: "Citations largely absent or incorrect. Formatting mostly ignored.", F: "No citations. Formatting requirements not attempted." } },
+      understanding_of_material: { weight: 20, description: "Demonstrates knowledge of American imperial history.", grades: { A: "Accurate knowledge of events such as the Spanish-American War, Philippine-American War, Open Door Policy, or Monroe Doctrine. Details are precise and relevant.", B: "Good understanding with minor inaccuracies.", C: "Surface understanding. Lacks depth or has notable factual errors.", D: "Significant misunderstanding of material.", F: "No accurate understanding of the material." } },
+      strength_of_argument:    { weight: 20, description: "Thesis presents a clear interpretive argument about American imperialism.", grades: { A: "Thesis is specific, arguable, and historically grounded.", B: "Argument is present but could be more precise.", C: "Thesis is vague or merely descriptive.", D: "Essay summarizes events rather than making an argument.", F: "No argument attempted." } },
+      support_of_argument:     { weight: 15, description: "At least five sources used as evidence for claims.", grades: { A: "Five or more sources cited. Evidence directly tied to claims and analyzed.", B: "Four or five sources. Evidence mostly tied to claims.", C: "Three sources. Evidence loosely connected.", D: "One or two sources. Evidence largely absent.", F: "No sources." } }
+    }
+  },
+  "HIST 220": {
+    course_name: "England in the 1800s",
+    essay_requirements: "Essays must be 4-6 pages. Students must make an argument about Victorian-era Britain and its political, economic, or social changes. At least four sources required. Chicago style.",
+    categories: {
+      structure:               { weight: 20, description: "Essay flows logically from introduction to conclusion.", grades: { A: "Thesis introduced early and clearly. Body supports thesis paragraph by paragraph. Conclusion ties argument together.", B: "Structure is mostly strong. A few organizational weaknesses.", C: "Structure is recognizable but some paragraphs are off-topic.", D: "Organization is weak. Essay does not build an argument.", F: "No structure." } },
+      clarity:                 { weight: 15, description: "Ideas expressed in clear, academic English.", grades: { A: "Clear, readable prose. Complex ideas expressed simply.", B: "Mostly clear with occasional awkward phrasing.", C: "Some confusing passages. Reader must work to follow.", D: "Frequent clarity issues throughout the essay.", F: "Writing is largely unclear." } },
+      formatting:              { weight: 10, description: "Chicago style, 12pt font, 1-inch margins.", grades: { A: "All formatting requirements followed exactly.", B: "Minor errors in citations or formatting.", C: "Several citation errors or missed formatting requirements.", D: "Most formatting requirements ignored.", F: "No formatting or citations." } },
+      understanding_of_material: { weight: 20, description: "Shows knowledge of 19th-century British history.", grades: { A: "Accurate knowledge of the Reform Acts, industrialization, empire, class structure, or Victorian culture. Specific events and dates used correctly.", B: "Good understanding with minor errors.", C: "Surface understanding with some factual errors.", D: "Significant misunderstanding of the material.", F: "No accurate understanding of 19th-century Britain." } },
+      strength_of_argument:    { weight: 20, description: "Thesis makes a debatable claim about 19th-century Britain.", grades: { A: "Strong, specific, debatable thesis. Student clearly takes a position.", B: "Argument is present but somewhat vague.", C: "Thesis is descriptive rather than argumentative.", D: "No clear argument. Essay is descriptive.", F: "No argument." } },
+      support_of_argument:     { weight: 15, description: "Evidence from at least four sources used and analyzed.", grades: { A: "Four or more sources. Evidence directly supports claims and is analyzed.", B: "Three to four sources. Evidence mostly analyzed.", C: "Two to three sources. Evidence loosely tied to argument.", D: "One source. Evidence barely connected.", F: "No sources." } }
+    }
+  },
+  "HIST 395": {
+    course_name: "History of Modern England",
+    essay_requirements: "Upper-division essays must be 7-10 pages. Students must argue an interpretive thesis about Britain in the 20th century. At least six sources required, two of which must be primary. Chicago citation style required.",
+    categories: {
+      structure:               { weight: 20, description: "Sophisticated structure with a nuanced, multi-part argument.", grades: { A: "Essay has a historiographical introduction, multi-part thesis, paragraphs that engage counterarguments, and a conclusion that situates the argument in broader historical significance.", B: "Good structure with most elements. May lack counterargument engagement.", C: "Structure is present but not sophisticated. Thesis may be one-dimensional.", D: "Basic structure. No engagement with complexity or counterargument.", F: "No organized structure." } },
+      clarity:                 { weight: 15, description: "Upper-division clarity: precise, nuanced, confident prose.", grades: { A: "Sophisticated writing that handles complexity without becoming unclear.", B: "Mostly clear. Occasional passages are less precise than expected at this level.", C: "Writing quality below upper-division expectations.", D: "Significant clarity problems.", F: "Writing is largely unclear." } },
+      formatting:              { weight: 10, description: "Chicago style with footnotes, bibliography, proper margins.", grades: { A: "Flawless Chicago formatting including bibliography.", B: "Minor citation errors.", C: "Several citation errors. Bibliography incomplete.", D: "Citations mostly absent. Bibliography missing.", F: "No citations." } },
+      understanding_of_material: { weight: 20, description: "In-depth knowledge of 20th-century British history and historiography.", grades: { A: "Demonstrates knowledge of both events and historiographical debates. Uses primary and secondary sources correctly.", B: "Good knowledge of events. Limited engagement with historiography.", C: "Surface knowledge. Relies on general claims without specific detail.", D: "Limited knowledge. Several factual errors.", F: "No accurate understanding demonstrated." } },
+      strength_of_argument:    { weight: 20, description: "Thesis is nuanced, original, and engages historical complexity.", grades: { A: "Thesis is original, multi-part, and nuanced. Essay engages with historical complexity and counterarguments.", B: "Good argument. May not fully engage complexity.", C: "Argument is present but simple or predictable.", D: "Weak argument. Essay is mostly descriptive.", F: "No argument." } },
+      support_of_argument:     { weight: 15, description: "Six or more sources including two primary sources, all analyzed.", grades: { A: "Six or more sources including at least two primary sources. Evidence is thoroughly analyzed and integrated.", B: "Five to six sources. Primary sources present but underused.", C: "Three to four sources. Limited primary source use.", D: "Two or fewer sources. No primary sources.", F: "No sources." } }
+    }
+  },
+  "HIST 410": {
+    course_name: "History of Native Americans in Canada",
+    essay_requirements: "Upper-division essays must be 8-10 pages. Students must make an argument about Indigenous peoples in Canada and engage with Indigenous perspectives where possible. At least six sources required, two of which must be primary. Chicago citation style.",
+    categories: {
+      structure:               { weight: 20, description: "Sophisticated structure engaging with multiple perspectives.", grades: { A: "Essay moves beyond a single narrative. Acknowledges Indigenous perspectives alongside colonial sources. Structure builds a layered argument.", B: "Strong structure. May rely too heavily on one perspective.", C: "Basic structure. Argument is one-dimensional.", D: "Disorganized. Argument is not built logically.", F: "No structure." } },
+      clarity:                 { weight: 15, description: "Upper-division clarity with culturally sensitive language.", grades: { A: "Writing is clear, confident, and uses appropriate terminology for Indigenous peoples.", B: "Mostly clear. Occasional terminology issues.", C: "Clarity issues and some use of outdated or inappropriate terminology.", D: "Frequent clarity problems and/or inappropriate terminology throughout.", F: "Writing is unclear throughout." } },
+      formatting:              { weight: 10, description: "Chicago style with footnotes and bibliography.", grades: { A: "Flawless Chicago formatting.", B: "Minor citation errors.", C: "Several citation errors.", D: "Citations largely absent.", F: "No citations." } },
+      understanding_of_material: { weight: 20, description: "Demonstrates knowledge of Indigenous history in Canada.", grades: { A: "Accurate knowledge of treaties, residential schools, land rights, or other relevant topics. Demonstrates awareness of both Indigenous and settler-colonial perspectives.", B: "Good knowledge. Limited engagement with Indigenous perspectives.", C: "Surface knowledge. Relies primarily on settler-colonial narratives.", D: "Significant factual errors. Little understanding of Indigenous experience.", F: "No accurate understanding demonstrated." } },
+      strength_of_argument:    { weight: 20, description: "Thesis engages critically with colonialism and Indigenous experience.", grades: { A: "Thesis is specific, debatable, and goes beyond describing colonial events to make a claim about their meaning or impact.", B: "Good argument. May be less nuanced about Indigenous agency.", C: "Argument present but simplistic.", D: "Essay is largely descriptive.", F: "No argument." } },
+      support_of_argument:     { weight: 15, description: "Six or more sources including two primary sources, at least one from an Indigenous perspective.", grades: { A: "Six or more sources. At least one primary source from an Indigenous perspective. Evidence directly and thoroughly supports claims.", B: "Sources present. Indigenous perspectives underused.", C: "Adequate sources but reliant on settler-colonial accounts.", D: "Minimal sources. No Indigenous perspectives represented.", F: "No sources." } }
+    }
+  },
+  "HIST 340": {
+    course_name: "History in Post WW2 America",
+    essay_requirements: "Essays must be 5-7 pages. Students must argue an interpretive claim about American society, politics, or culture after 1945. At least four sources required, one of which must be a primary source. Chicago citation style.",
+    categories: {
+      structure:               { weight: 20, description: "Introduction with thesis, organized body, and conclusion.", grades: { A: "Clear thesis introduced in the opening paragraph. Each body paragraph advances the argument. Conclusion reflects on the significance of the argument.", B: "Good structure with minor organizational issues.", C: "Structure is recognizable but some paragraphs are loosely connected.", D: "Disorganized. Hard to follow the argument.", F: "No organized structure." } },
+      clarity:                 { weight: 15, description: "Clear, academic writing appropriate for a 300-level course.", grades: { A: "Writing is clear and direct. Complex ideas are expressed without confusion.", B: "Mostly clear. Occasional awkward sentences.", C: "Several passages are unclear. Some sentences require re-reading.", D: "Frequent clarity problems.", F: "Writing is largely unreadable." } },
+      formatting:              { weight: 10, description: "Chicago citation style with footnotes or endnotes.", grades: { A: "Chicago citations are correct and complete. All formatting requirements met.", B: "Minor citation errors.", C: "Several citation errors or missed formatting requirements.", D: "Citations largely incorrect or absent.", F: "No citations." } },
+      understanding_of_material: { weight: 20, description: "Demonstrates knowledge of post-1945 American history.", grades: { A: "Accurate, specific knowledge of the Cold War, civil rights, Vietnam, counterculture, or other relevant topics. Details are precise and used to support the argument.", B: "Good understanding with minor factual errors.", C: "Surface understanding. Some factual errors.", D: "Significant factual errors. Shallow understanding.", F: "No accurate understanding of the material." } },
+      strength_of_argument:    { weight: 20, description: "Thesis makes a clear, debatable interpretive claim.", grades: { A: "Thesis is specific and debatable. Student takes a clear position on why or how something happened or what it meant.", B: "Argument is present but somewhat vague.", C: "Thesis is descriptive rather than argumentative.", D: "Essay is mostly a summary. No real argument.", F: "No argument attempted." } },
+      support_of_argument:     { weight: 15, description: "At least four sources including one primary source used as evidence.", grades: { A: "Four or more sources including one primary source. Evidence directly supports claims and is analyzed.", B: "Three to four sources. Evidence mostly tied to claims.", C: "Two to three sources. Evidence loosely connected.", D: "One or two sources. No primary source. Evidence barely used.", F: "No sources." } }
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// DATA: SAMPLE ESSAYS
+// ═══════════════════════════════════════════════════════════════════
+const SAMPLE_ESSAYS = [
+  { id:1, course:"HIST 112", course_name:"History of Ancient Rome", title:"The Transformation of Roman Military Identity Under Augustus", grade:"A", score:94, category_scores:{structure:19,clarity:14,formatting:10,understanding_of_material:19,strength_of_argument:18,support_of_argument:14}, essay_text:"When Augustus reorganized the Roman military following the civil wars, he did not simply reform an institution. He fundamentally redefined what it meant to be a Roman soldier, transforming the legionary from a citizen-warrior tied to his general into a professional servant of the emperor and the Roman state. This paper argues that the Augustan military reforms created a new professional identity for the Roman soldier that prioritized loyalty to the emperor over republican citizenship, and that this transformation was essential to the stability of the Principate.\n\nThe late republic had produced a dangerous pattern: armies loyal to their generals rather than to Rome. Marius had tied soldiers to himself through the promise of land grants, and by the time of Caesar and Pompey, legions functioned as private armies. Augustus recognized that the empire could not survive if every wealthy general could call on his troops to march on Rome. His solution was to redirect military loyalty toward himself as the single source of authority.\n\nAugustus accomplished this through several concrete measures. He standardized the length of service, set fixed salaries drawn from an imperial treasury he controlled, and established the aerarium militare in 6 CE, a retirement fund that guaranteed veterans a cash payment from Augustus himself. Adrian Goldsworthy notes that this transformed the financial relationship between soldier and state, making the emperor rather than the general the ultimate provider. By making Augustus the source of pay and pension, the reforms ensured that a soldier's future was tied to the emperor's survival, not to any regional commander.\n\nThe oath of loyalty, the sacramentum, was also reshaped under Augustus. Previously sworn to the Senate and People of Rome, the oath was now directed at Augustus personally. Pat Southern argues that the oath created a personal bond between the emperor and each soldier that previous republican institutions could not replicate. When soldiers swore to Augustus they were not swearing to an abstraction but to a living man who, through propaganda and ceremony, made himself visible and present in military life.\n\nSome historians have argued that Augustus maintained the republican fiction of an army serving the Senate. The evidence does not support this reading. When the Rhine legions mutinied in 14 CE after the death of Augustus, their demands were directed not to the Senate but to Tiberius as the new emperor. This alone demonstrates that soldiers understood themselves as bound to the emperor, not to the republican institutions that technically remained in place.\n\nThe Augustan military reforms produced a soldier whose professional identity was inseparable from loyalty to the emperor. This transformation was not incidental to the Principate but foundational to it.", professor_comments:"This is an excellent essay. Your thesis is specific and arguable, and you follow through on it consistently. The engagement with Goldsworthy and Southern shows good use of secondary scholarship. I especially appreciated your use of the 14 CE mutiny as counterevidence to the republican fiction argument -- that is exactly the kind of move a strong history essay should make. Minor note: your discussion of the aerarium militare could be extended slightly. Overall, this is the work of a student who understands both the evidence and the historical stakes of the argument." },
+  { id:2, course:"HIST 112", course_name:"History of Ancient Rome", title:"Julius Caesar and the Fall of the Roman Republic", grade:"D", score:59, category_scores:{structure:10,clarity:9,formatting:4,understanding_of_material:13,strength_of_argument:10,support_of_argument:13}, essay_text:"Julius Caesar was one of the most important people in Roman history. He did a lot of things that changed Rome forever. This essay will talk about Julius Caesar and how he led to the fall of the Roman Republic.\n\nCaesar was born in 100 BC. He was a very smart and ambitious person. He joined the military and became a great general. He conquered Gaul which was a huge territory. He also had a lot of political enemies in Rome.\n\nCaesar crossed the Rubicon river in 49 BC which was illegal because you were not supposed to bring your army into Italy. This started a civil war with Pompey who was also a famous general. Pompey lost and Caesar became the dictator of Rome. He made a lot of reforms while he was dictator like changing the calendar.\n\nCaesar was assassinated on the Ides of March in 44 BC. The senators who killed him were called the Liberatores. They thought they were saving the republic but it did not work. After Caesar died there was another civil war and eventually Augustus became the first emperor.\n\nIn conclusion Julius Caesar caused the fall of the Roman Republic because he crossed the Rubicon and made himself dictator. The republic never recovered from this.", professor_comments:"This essay reads as a summary of Caesar's life rather than a historical argument. You have not presented a thesis that makes a debatable claim. Saying Caesar caused the fall of the republic by crossing the Rubicon is mostly a retelling of what happened, not an interpretation. The essay does not engage with any of the assigned readings or secondary sources. There are no citations anywhere in the essay, which is a significant problem for a history class. Please come to office hours to discuss how to develop an argumentative thesis." },
+  { id:3, course:"HIST 125", course_name:"Intro to History of India", title:"Economic Motives Behind British Colonization of India", grade:"B", score:83, category_scores:{structure:17,clarity:13,formatting:8,understanding_of_material:16,strength_of_argument:16,support_of_argument:13}, essay_text:"The British colonization of India is often explained through the lens of political ambition or civilizational mission, but the economic motives that drove British expansion deserve closer attention. This essay argues that British colonization of India was primarily driven by commercial interest, and that the East India Company's transformation from a trading firm into an administrative power reveals how economic incentives shaped political decisions.\n\nThe East India Company was established in 1600 as a joint-stock trading enterprise focused on acquiring spices, textiles, and other goods from South Asia. Initially, the Company operated from trading posts under agreements negotiated with Mughal authorities. This changed significantly in the 18th century as Mughal central authority declined and regional powers competed for dominance.\n\nThe Battle of Plassey in 1757 is often cited as the turning point. Robert Clive's victory over the Nawab of Bengal gave the Company control of Bengal's revenue, which at the time was one of the wealthiest provinces in the subcontinent. P.J. Marshall notes that access to Bengal's tax revenues allowed the Company to fund further military expansion using Indian money rather than capital sent from London. This self-financing mechanism made further territorial acquisition economically rational.\n\nThe deindustrialization of Indian textile production also illustrates how economic logic drove colonial policy. Indian cotton textiles had been competitive on global markets for centuries. British policy in the 19th century systematically favored British manufacturers through tariffs and trade restrictions. Mike Davis and other economic historians have argued that colonial policy was not a byproduct of political control but a deliberate economic strategy.\n\nIn summary, the British colonization of India was fundamentally driven by commercial interest, from the Company's early trading operations to the deliberate deindustrialization of Indian manufacturing.", professor_comments:"This is a solid B essay. Your thesis is clear and your historical knowledge is generally accurate. The use of Marshall on the post-Plassey revenue system is effective, and I appreciate that you engaged with the ideological dimension rather than ignoring counterarguments. A few issues hold this back from an A. The citation to Mike Davis is informal -- you need a proper MLA in-text citation with page number. More importantly, the paragraph on deindustrialization makes a strong claim but relies on a single source. Good work overall." },
+  { id:4, course:"HIST 125", course_name:"Intro to History of India", title:"India and Its History", grade:"F", score:32, category_scores:{structure:5,clarity:7,formatting:1,understanding_of_material:8,strength_of_argument:5,support_of_argument:6}, essay_text:"India is a very old country with a lot of history. It has been around for thousands of years. Many different empires have ruled India over time. The Mughal Empire was one of the biggest empires in India. They ruled for a long time and built many famous buildings like the Taj Mahal.\n\nAfter the Mughals there was the British. The British came to India and took over. They were there for about 200 years. Gandhi fought against the British and eventually India became independent in 1947.\n\nIndia has a lot of different religions. Hinduism and Islam are both popular in India. When India became independent it was split into two countries, India and Pakistan. A lot of people died during partition.\n\nIn conclusion India has had a very interesting history. From the ancient times to the modern day India has gone through many changes.", professor_comments:"This essay does not meet the minimum requirements for this assignment. There is no thesis. The essay is a very brief overview of Indian history that does not make any argument. There are no sources cited anywhere. The essay is also significantly below the required length of 4-6 pages. Please review the syllabus carefully and come to office hours before the next assignment." },
+  { id:5, course:"HIST 190", course_name:"Imperial America", title:"American Expansion in the Pacific After 1898", grade:"C", score:72, category_scores:{structure:14,clarity:11,formatting:6,understanding_of_material:14,strength_of_argument:13,support_of_argument:14}, essay_text:"After the Spanish-American War in 1898 the United States gained control over the Philippines, Guam, and Puerto Rico. This was a major turning point in American history because the country was now in the business of controlling overseas territories with non-white populations. This essay will discuss how the United States expanded its power in the Pacific after 1898 and what that meant for American identity.\n\nThe Philippines was the most significant acquisition. The Treaty of Paris ended the Spanish-American War and transferred the Philippines to the United States for 20 million dollars. Many Americans were uncomfortable with this. Mark Twain and other anti-imperialists argued that owning a colony violated American democratic principles.\n\nThe Philippine-American War that followed was brutal. American forces committed atrocities including the Balangiga Massacre and the use of water torture. The war lasted officially until 1902 but resistance continued for years.\n\nThe United States justified its expansion in several ways. President McKinley said in a famous speech that God told him to take the Philippines so Americans could civilize and christianize the Filipinos. Senator Albert Beveridge made arguments about racial destiny and American superiority.\n\nIn conclusion American expansion in the Pacific after 1898 was driven by a combination of economic interest, strategic thinking, and racial ideology.", professor_comments:"This essay shows you have done some reading and you understand the basic facts. However, the thesis is vague. Saying expansion was driven by a combination of economic, strategic, and racial factors is not a specific argument -- it is a list. A stronger essay would pick one of those factors and argue for its primacy. You cite Twain and Beveridge but do not give Chicago footnotes, which is a significant formatting problem. Focus on sharpening your thesis and fixing your citations in the revision." },
+  { id:6, course:"HIST 190", course_name:"Imperial America", title:"The Open Door Policy and Economic Imperialism in China", grade:"A", score:96, category_scores:{structure:20,clarity:15,formatting:9,understanding_of_material:19,strength_of_argument:19,support_of_argument:14}, essay_text:"American imperialism in Asia at the turn of the 20th century is most commonly discussed through the lens of military conquest in the Philippines. Less examined but equally significant is the economic imperialism the United States pursued in China through the Open Door Policy. This essay argues that the Open Door Notes of 1899 and 1900 represented a distinctly American form of imperialism that sought commercial dominance without territorial acquisition, and that this model shaped American foreign policy far into the 20th century.\n\nSecretary of State John Hay issued the first Open Door Note in September 1899, calling on the European powers carving up China into spheres of influence to allow equal commercial access to all nations. As Walter LaFeber has argued, the United States lacked the capacity or desire to claim a territorial sphere in China, but its manufactured goods required access to Chinese markets. Equal access was the policy that benefited the power without a territorial foothold.\n\nBrooks Adams's 1900 work America's Economic Supremacy, which circulated widely in State Department circles, argued that American industrial overproduction required Asian markets to absorb the surplus. Hay was aware of this argument. The notes were not a disinterested call for Chinese sovereignty; they were a calculated strategy to keep Chinese markets open for American exports.\n\nEmily Rosenberg has traced how the Open Door framework became the template for American economic internationalism through the 20th century, from Wilson's Fourteen Points to the Bretton Woods system. The Open Door Notes were its first clear expression.\n\nThe Open Door Policy reveals that American imperialism also operated through the construction of an open global commercial order in which American economic power could dominate without the costs of formal empire.", professor_comments:"Excellent work. Your thesis is precise and your argument is genuinely interpretive. The LaFeber and Rosenberg citations are well-chosen and well-integrated. I especially appreciated the move where you acknowledge the weakness of the Open Door in military terms but redirect to the ideological legacy. That is sophisticated historical argumentation. One minor note: one of your Chicago footnotes is missing the publisher city. Otherwise, this is outstanding work." },
+  { id:7, course:"HIST 220", course_name:"England in the 1800s", title:"The Reform Act of 1832 and the Expansion of Democracy", grade:"C", score:71, category_scores:{structure:14,clarity:10,formatting:7,understanding_of_material:14,strength_of_argument:12,support_of_argument:14}, essay_text:"The Reform Act of 1832 is one of the most important pieces of legislation in British history because it changed who could vote. Before the act many parliamentary seats were controlled by a small number of wealthy landowners and boroughs that had very few voters. The act changed this and allowed more people to have a say in government.\n\nBefore 1832 the British electoral system had many problems. Rotten boroughs like Old Sarum had almost no residents but still sent members to parliament. Meanwhile large industrial cities like Manchester and Birmingham had no representation at all.\n\nThe Whig government under Earl Grey passed the Reform Act after a long political struggle. It abolished most rotten boroughs, redistributed seats to industrial cities, and extended the vote to middle-class property owners. It increased the electorate from about 400,000 to 650,000 people.\n\nHowever the act did not go very far. The working class was still excluded from voting. Women could not vote at all. The Chartist movement emerged in the late 1830s partly because workers felt the act had not addressed their interests.\n\nIn conclusion the Reform Act of 1832 was an important step toward democracy but it was only the beginning.", professor_comments:"You have a basic understanding of the Reform Act and present the facts accurately. The problem is that your thesis -- that the act was an important step toward democracy even though it did not go very far -- is not really an argument. It is a widely shared observation. A stronger essay would take a position that requires defense. Your writing is also somewhat informal in places. Please review the Chicago style guide before your next essay." },
+  { id:8, course:"HIST 220", course_name:"England in the 1800s", title:"Class Anxiety and the New Poor Law of 1834", grade:"B", score:85, category_scores:{structure:17,clarity:13,formatting:9,understanding_of_material:17,strength_of_argument:16,support_of_argument:13}, essay_text:"The New Poor Law of 1834 is typically analyzed as an administrative reform driven by utilitarian economics and the influence of Edwin Chadwick and Nassau Senior. This essay argues that the law was equally a product of middle-class anxiety about the social threat posed by an expanding and increasingly visible urban poor, and that the workhouse system was designed not only to reduce expenditure but to discipline and contain the working class.\n\nThe old Poor Law system had operated through parish relief, which allowed some outdoor relief that let the poor remain in their communities. Critics argued this created dependency and undermined labor discipline. The 1834 Poor Law Report, written largely by Chadwick, accepted this diagnosis and proposed the principle of less eligibility: relief should always be less attractive than the lowest paid independent labor.\n\nDerek Fraser has argued that the new law reflected a fundamental shift in attitudes toward poverty, from a Christian duty to assist the poor toward a market logic that treated poverty as a product of individual failure.\n\nThe workhouse was deliberately made unpleasant to deter applications for relief. Families were separated. Diets were restricted. Labor was imposed. These conditions were intentional features designed to make the workhouse a deterrent.\n\nThe New Poor Law of 1834 was not simply an efficiency measure. It was a disciplinary project shaped by class anxiety and the needs of industrial capitalism.", professor_comments:"This is a well-written and clearly argued essay. Your thesis is genuinely interpretive and you develop it consistently. The use of Fraser is effective. The fifth paragraph, where you acknowledge the sincerity of reformers without abandoning your argument, is a sign of good historical thinking. Two things would push this to an A: one more primary source, and page numbers missing in two Chicago footnotes." },
+  { id:9, course:"HIST 395", course_name:"History of Modern England", title:"The Decline of British Imperial Confidence After the Suez Crisis", grade:"B", score:82, category_scores:{structure:16,clarity:12,formatting:9,understanding_of_material:16,strength_of_argument:16,support_of_argument:13}, essay_text:"The Suez Crisis of 1956 is frequently cited as the moment Britain accepted its diminished role in world affairs. This essay argues that the crisis did not simply reveal British weakness but actively destroyed the psychological foundations of imperial confidence that had persisted among British elites long after the material conditions of empire had eroded.\n\nHistorians have debated whether Suez represented a turning point or merely accelerated a decline already underway. David Reynolds and other revisionist historians have argued that British power had been declining since 1918. But it risks overlooking how much the subjective experience of decline matters in political history. Eden and the Conservative establishment genuinely believed they were acting as a great power in 1956.\n\nEden's decision to use military force to reverse Nasser's nationalization of the Suez Canal was rooted in a particular vision of British world responsibility. Internal Foreign Office documents, cited by Keith Kyle, show that Eden drew explicit analogies to the appeasement of Hitler.\n\nThe American response demolished that framing. Eisenhower's refusal to support the intervention, combined with pressure on sterling, forced a humiliating withdrawal. The fact that the United States sided with the United Nations against Britain made clear that the postwar world had different rules.\n\nSuez was not simply a military or diplomatic failure. It was an epistemological event: the moment when a governing class's self-understanding was forcibly revised.", professor_comments:"This is a good upper-division essay with a clear and sophisticated thesis. Your engagement with Reynolds is appropriate. The Kyle citation on Eden and the Munich analogy is effective. For an A, the essay would need a primary source not mediated through a secondary author -- a speech by Eden, a Hansard debate, or a declassified Cabinet document would strengthen your argument considerably." },
+  { id:10, course:"HIST 410", course_name:"History of Native Americans in Canada", title:"The Residential School System in Canada", grade:"D", score:60, category_scores:{structure:11,clarity:10,formatting:5,understanding_of_material:13,strength_of_argument:11,support_of_argument:10}, essay_text:"Canada's residential school system was one of the most harmful policies in Canadian history. The government took Indigenous children away from their families and sent them to schools where they were forbidden from speaking their languages or practicing their cultures.\n\nThe residential schools started in the 1870s and the last one did not close until 1996. They were run by the government and various church organizations. Children were often taken by force and families who resisted could face legal consequences.\n\nThe conditions in the schools were often terrible. Children experienced physical and sexual abuse. Many children died at the schools from disease, abuse, or neglect. The Truth and Reconciliation Commission documented thousands of deaths.\n\nThe effects of the residential schools are still felt today in Indigenous communities across Canada. High rates of addiction, mental health problems, and family breakdown have been linked to the intergenerational trauma caused by the residential school system.\n\nIn conclusion the residential school system was a terrible policy that caused enormous harm to Indigenous people in Canada.", professor_comments:"You demonstrate some factual knowledge of the residential school system but this essay does not meet upper-division standards. There is no thesis. The essay describes the residential schools without making any argumentative claim about them. There are also no citations. This essay also relies entirely on a settler-colonial perspective. At the 400 level you are expected to engage with Indigenous voices and scholarship." }
+];
+
+const UNGRADED_ESSAY = {
+  course: "HIST 340",
+  course_name: "History in Post WW2 America",
+  title: "The GI Bill and the Creation of the Postwar American Middle Class",
+  essay_text: `When World War II ended in 1945, millions of American veterans returned home to an economy that had been radically transformed by wartime production. The Servicemen's Readjustment Act of 1944, better known as the GI Bill, is frequently celebrated as one of the most successful pieces of social legislation in American history, credited with creating the postwar middle class. This essay argues that while the GI Bill did expand access to education and homeownership for millions of veterans, its benefits were systematically denied to Black veterans through both federal policy and local administration, and that this exclusion played a decisive role in creating and entrenching the racial wealth gap that defines American inequality today.
+
+The GI Bill offered veterans low-interest home loans, tuition assistance for college and vocational training, and unemployment insurance. Between 1944 and 1956, the federal government spent approximately $14.5 billion on veteran education alone. The number of college-educated Americans increased dramatically in the late 1940s and 1950s, and the suburban homeownership rate rose sharply as veterans used VA loans to purchase homes in newly developed subdivisions. For white veterans, the GI Bill delivered on its promise.
+
+Black veterans faced a fundamentally different experience. The GI Bill was administered largely through local institutions -- banks, universities, and Veterans Service organizations -- that operated under the segregation norms of their communities. In the South, VA loan officers at local banks routinely declined applications from Black veterans. Historian Ira Katznelson, in his book When Affirmative Action Was White, documents how the congressional compromise that made the GI Bill possible gave Southern Democrats control over its administration, ensuring that Black veterans would be systematically excluded. This was not an accident or an administrative failure. It was a political design.
+
+The consequences for higher education were equally stark. Most historically white universities in the South refused to admit Black veterans. The historically Black colleges and universities that served them were overwhelmed and could not accommodate all eligible applicants. While white veterans flooded into universities that would produce the professional class of the 1950s and 1960s, many Black veterans who applied to use their education benefits could not find a school that would accept them.
+
+Some historians have argued that the GI Bill should still be counted a success because it benefited more Americans than any previous social program. This argument misses the point. The question is not whether the GI Bill helped some people but how it shaped the distribution of opportunity along racial lines. Richard Rothstein's work on residential segregation in The Color of Law shows that the GI Bill-funded suburban expansion was accompanied by federal housing policies that explicitly excluded Black families from the new suburbs.
+
+The GI Bill is a case study in how federal policy can simultaneously expand opportunity and enforce racial exclusion. Its legacy is not simply the postwar middle class but the racial architecture of that middle class, one built on access for white veterans and systematic exclusion for Black ones.`
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER SAMPLE ESSAYS
+// ═══════════════════════════════════════════════════════════════════
+const catLabels = {
+  structure: "Structure",
+  clarity: "Clarity",
+  formatting: "Formatting",
+  understanding_of_material: "Understanding",
+  strength_of_argument: "Argument",
+  support_of_argument: "Support"
+};
+const catMaxes = { structure:20, clarity:15, formatting:10, understanding_of_material:20, strength_of_argument:20, support_of_argument:15 };
+
+function renderEssayGrid() {
+  const grid = document.getElementById('essay-grid');
+  SAMPLE_ESSAYS.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'essay-card';
+    card.onclick = () => openEssayModal(e.id);
+    card.innerHTML = `
+      <p class="essay-course">${e.course}</p>
+      <p class="essay-title">${e.title}</p>
+      <p class="essay-score">${e.score} / 100</p>
+      <span class="grade-badge grade-${e.grade}">${e.grade}</span>`;
+    grid.appendChild(card);
+  });
+}
+
+function openEssayModal(id) {
+  const e = SAMPLE_ESSAYS.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('modal-course').textContent = e.course + ' — ' + e.course_name;
+  document.getElementById('modal-title').textContent = e.title;
+  document.getElementById('modal-meta').innerHTML = `
+    <span>Grade: <strong class="grade-${e.grade}">${e.grade}</strong></span>
+    <span>Score: <strong>${e.score} / 100</strong></span>`;
+  document.getElementById('modal-essay-body').textContent = e.essay_text;
+  document.getElementById('modal-comments').textContent = e.professor_comments;
+  // score bars
+  const bars = document.getElementById('modal-score-bars');
+  bars.innerHTML = '';
+  Object.entries(e.category_scores).forEach(([k, v]) => {
+    const max = catMaxes[k];
+    const pct = Math.round((v / max) * 100);
+    bars.innerHTML += `
+      <div class="score-bar-row">
+        <span>${catLabels[k]}</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%"></div></div>
+        <span>${v}/${max}</span>
+      </div>`;
+  });
+  document.getElementById('essay-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('essay-modal')) closeModalBtn();
+}
+function closeModalBtn() {
+  document.getElementById('essay-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER SYLLABUS VIEWER
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('syllabus-select').addEventListener('change', function() {
+  const val = this.value;
+  const display = document.getElementById('syllabus-display');
+  if (!val) { display.classList.remove('visible'); return; }
+  const s = SYLLABI[val];
+  let html = `<p style="font-size:0.85rem;color:#5a4a32;margin-bottom:1rem;"><strong>Requirements:</strong> ${s.essay_requirements}</p>`;
+  Object.entries(s.categories).forEach(([k, cat]) => {
+    html += `<div class="syllabus-cat">
+      <div class="syllabus-cat-name">${catLabels[k] || k} &mdash; ${cat.weight} points</div>
+      <p style="font-size:0.8rem;color:#5a4a32;margin-bottom:0.4rem;">${cat.description}</p>
+      <div class="syllabus-grades">`;
+    ['A','B','C','D','F'].forEach(g => {
+      html += `<div class="syllabus-grade"><strong>${g}</strong>${cat.grades[g]}</div>`;
+    });
+    html += `</div></div>`;
+  });
+  display.innerHTML = html;
+  display.classList.add('visible');
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// GRADER TOOL
+// ═══════════════════════════════════════════════════════════════════
+function loadUngraded() {
+  document.getElementById('course-select').value = 'HIST 340';
+  document.getElementById('essay-title-input').value = UNGRADED_ESSAY.title;
+  document.getElementById('essay-input').value = UNGRADED_ESSAY.essay_text;
+}
+
+function buildSyllabusText(courseCode) {
+  const s = SYLLABI[courseCode];
+  let txt = `COURSE: ${s.course_name}\nREQUIREMENTS: ${s.essay_requirements}\n\nGRADING CATEGORIES:\n`;
+  Object.entries(s.categories).forEach(([k, cat]) => {
+    txt += `\n${catLabels[k]} (worth ${cat.weight} points out of 100)\nDescription: ${cat.description}\n`;
+    ['A','B','C','D','F'].forEach(g => { txt += `  ${g}: ${cat.grades[g]}\n`; });
+  });
+  return txt;
+}
+
+function buildExamplesText(courseCode) {
+  const examples = SAMPLE_ESSAYS.filter(e => e.course === courseCode);
+  if (!examples.length) return "No example essays available for this course.";
+  let txt = "EXAMPLE GRADED ESSAYS FROM THIS COURSE:\n";
+  examples.forEach((e, i) => {
+    txt += `\n--- Example ${i+1} ---\nTitle: ${e.title}\nGrade: ${e.grade} (${e.score}/100)\n`;
+    txt += "Category Scores:\n";
+    Object.entries(e.category_scores).forEach(([k,v]) => { txt += `  ${catLabels[k]}: ${v}\n`; });
+    txt += `Essay Text:\n${e.essay_text}\nProfessor Comments:\n${e.professor_comments}\n`;
+  });
+  return txt;
+}
+
+async function gradeEssay() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  const courseCode = document.getElementById('course-select').value;
+  const title = document.getElementById('essay-title-input').value.trim();
+  const essayText = document.getElementById('essay-input').value.trim();
+  const errEl = document.getElementById('error-msg');
+  errEl.classList.remove('show');
+
+  if (!apiKey) { showError("Please enter your Anthropic API key."); return; }
+  if (!title)  { showError("Please enter an essay title."); return; }
+  if (!essayText || essayText.length < 100) { showError("Please paste a complete essay (at least 100 characters)."); return; }
+
+  const btn = document.getElementById('grade-btn');
+  btn.disabled = true;
+  document.getElementById('spinner').classList.add('show');
+  document.getElementById('results-area').style.display = 'none';
+
+  const syllabusText = buildSyllabusText(courseCode);
+  const examplesText = buildExamplesText(courseCode);
+
+  const prompt = `You are a college history professor grading an undergraduate essay.
+You have been given a course syllabus with detailed grading criteria and two example essays that have already been graded to calibrate your judgment.
+
+Your job is to:
+1. Read the syllabus carefully.
+2. Study the example essays and their grades as reference points.
+3. Grade the new student essay on each category using the syllabus criteria.
+4. Give an overall letter grade (A, B, C, D, or F) and a score out of 100.
+5. Write specific comments for each category explaining the score and what the student must do to improve.
+6. Write an overall comment summarizing the essay's strengths and weaknesses.
+
+Be honest and direct. Do not inflate grades. Feedback should be specific enough that the student knows exactly what to change.
+
+=== SYLLABUS AND GRADING CRITERIA ===
+${syllabusText}
+
+=== EXAMPLE GRADED ESSAYS ===
+${examplesText}
+
+=== ESSAY TO GRADE ===
+Title: ${title}
+
+${essayText}
+
+=== RESPONSE FORMAT ===
+Respond ONLY with a JSON object. No text outside the JSON. No markdown backticks.
+
+{
+  "letter_grade": "A",
+  "total_score": 90,
+  "category_scores": {
+    "structure": 18,
+    "clarity": 13,
+    "formatting": 9,
+    "understanding_of_material": 18,
+    "strength_of_argument": 18,
+    "support_of_argument": 14
+  },
+  "category_feedback": {
+    "structure": "Explanation here.",
+    "clarity": "Explanation here.",
+    "formatting": "Explanation here.",
+    "understanding_of_material": "Explanation here.",
+    "strength_of_argument": "Explanation here.",
+    "support_of_argument": "Explanation here."
+  },
+  "overall_comment": "Overall summary here.",
+  "top_improvements": [
+    "First improvement.",
+    "Second improvement.",
+    "Third improvement."
+  ]
+}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-5",
+        max_tokens: 1500,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    const raw = data.content[0].text.trim().replace(/^```json|^```|```$/g, '').trim();
+    const result = JSON.parse(raw);
+    displayResults(title, result);
+  } catch (err) {
+    showError("Error: " + err.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('spinner').classList.remove('show');
+  }
+}
+
+function displayResults(title, r) {
+  const gradeColors = { A: 'var(--accent2)', B: '#3a7abf', C: 'var(--gold)', D: '#c05c00', F: 'var(--accent)' };
+  const bigGrade = document.getElementById('big-grade');
+  bigGrade.textContent = r.letter_grade;
+  bigGrade.style.color = gradeColors[r.letter_grade] || 'var(--ink)';
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `Total Score: ${r.total_score} / 100`;
+
+  // Score bars
+  const barsEl = document.getElementById('score-bars');
+  barsEl.innerHTML = '';
+  Object.entries(r.category_scores).forEach(([k, v]) => {
+    const max = catMaxes[k] || 20;
+    const pct = Math.round((v / max) * 100);
+    barsEl.innerHTML += `
+      <div class="score-bar-row">
+        <span>${catLabels[k] || k}</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${pct}%"></div></div>
+        <span>${v}/${max}</span>
+      </div>`;
+  });
+
+  document.getElementById('overall-comment').textContent = r.overall_comment;
+
+  const impList = document.getElementById('improvements-list');
+  impList.innerHTML = '';
+  (r.top_improvements || []).forEach(imp => {
+    const li = document.createElement('li');
+    li.textContent = imp;
+    impList.appendChild(li);
+  });
+
+  const catFB = document.getElementById('cat-feedback');
+  catFB.innerHTML = '';
+  Object.entries(r.category_feedback || {}).forEach(([k, text]) => {
+    const score = r.category_scores[k];
+    const max = catMaxes[k] || 20;
+    const div = document.createElement('div');
+    div.className = 'cat-feedback-item';
+    div.innerHTML = `
+      <div class="cat-feedback-header" onclick="toggleFeedback(this)">
+        <span>${catLabels[k] || k}</span>
+        <span class="cat-score">${score}/${max}</span>
+      </div>
+      <div class="cat-feedback-body">${text}</div>`;
+    catFB.appendChild(div);
+  });
+
+  const area = document.getElementById('results-area');
+  area.style.display = 'block';
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleFeedback(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+renderEssayGrid();
+</script>
+</body>
+</html>
