@@ -732,9 +732,9 @@
     <p>Paste your essay below along with the course syllabus requirements, enter your Anthropic API key, and the system will grade it against the rubric and provide actionable feedback.</p>
 
     <div id="grader-section">
-      <div class="api-key-row" style="display:none;">
+      <div class="api-key-row">
         <label for="api-key">Anthropic API Key</label>
-        <input type="password" id="api-key" value="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" autocomplete="off" />
+        <input type="password" id="api-key" placeholder="sk-ant-..." autocomplete="off" />
       </div>
 
       <div class="two-col">
@@ -1072,6 +1072,7 @@ async function gradeEssay() {
   errEl.classList.remove('show');
 
 
+  if (!apiKey) { showError("Please enter your Anthropic API key."); return; }
   if (!title)  { showError("Please enter an essay title."); return; }
   if (!essayText || essayText.length < 100) { showError("Please paste a complete essay (at least 100 characters)."); return; }
 
