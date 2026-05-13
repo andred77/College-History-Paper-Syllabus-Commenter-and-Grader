@@ -732,9 +732,9 @@
     <p>Paste your essay below along with the course syllabus requirements, enter your Anthropic API key, and the system will grade it against the rubric and provide actionable feedback.</p>
 
     <div id="grader-section">
-      <div class="api-key-row">
+      <div class="api-key-row" style="display:none;">
         <label for="api-key">Anthropic API Key</label>
-        <input type="password" id="api-key" placeholder="sk-ant-..." autocomplete="off" />
+        <input type="password" id="api-key" value="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" autocomplete="off" />
       </div>
 
       <div class="two-col">
@@ -1071,7 +1071,7 @@ async function gradeEssay() {
   const errEl = document.getElementById('error-msg');
   errEl.classList.remove('show');
 
-  if (!apiKey) { showError("Please enter your Anthropic API key."); return; }
+
   if (!title)  { showError("Please enter an essay title."); return; }
   if (!essayText || essayText.length < 100) { showError("Please paste a complete essay (at least 100 characters)."); return; }
 
@@ -1148,7 +1148,7 @@ Respond ONLY with a JSON object. No text outside the JSON. No markdown backticks
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-5",
-        max_tokens: 1500,
+        max_tokens: 2500,
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -1159,7 +1159,30 @@ Respond ONLY with a JSON object. No text outside the JSON. No markdown backticks
     }
 
     const data = await response.json();
-    const raw = data.content[0].text.trim().replace(/^```json|^```|```$/g, '').trim();
+    let raw = data.content[0].text.trim();
+
+    // Strip markdown fences if present
+    raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '').trim();
+
+    // Extract just the JSON object in case there is any surrounding text
+    const firstBrace = raw.indexOf('{');
+    const lastBrace = raw.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      raw = raw.slice(firstBrace, lastBrace + 1);
+    }
+
+    // Replace curly/smart quotes with straight quotes so JSON.parse does not choke
+    raw = raw.replace(/[\u2018\u2019]/g, "\'").replace(/[\u201C\u201D]/g, '\"');
+
+    // Remove literal control characters (newlines/tabs inside string values break JSON)
+    // Replace them with a space so feedback text stays readable
+    raw = raw.replace(/[\x00-\x1F\x7F]/g, (ch) => {
+      if (ch === '\n') return ' ';
+      if (ch === '\r') return ' ';
+      if (ch === '\t') return ' ';
+      return '';
+    });
+
     const result = JSON.parse(raw);
     displayResults(title, result);
   } catch (err) {
